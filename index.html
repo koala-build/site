@@ -9,91 +9,134 @@
 <style>
 
 *{
-box-sizing:border-box;
 margin:0;
 padding:0;
+box-sizing:border-box;
 }
 
 body{
 font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,sans-serif;
 background:#0b0f14;
 color:#e6edf3;
-height:100vh;
+min-height:100vh;
 display:flex;
-align-items:center;
-justify-content:center;
-overflow:hidden;
+flex-direction:column;
 }
 
-/* subtle animated gradient */
+/* smooth animated background */
 
 body::before{
 content:"";
-position:absolute;
-width:200%;
-height:200%;
-background:radial-gradient(circle at 30% 30%, #1f6feb22, transparent 40%),
-           radial-gradient(circle at 70% 70%, #2ea04322, transparent 40%);
-animation:float 12s ease-in-out infinite alternate;
+position:fixed;
+top:-50%;
+left:-50%;
+width:200vw;
+height:200vh;
+
+background:
+radial-gradient(circle at 25% 35%, #1f6feb33, transparent 40%),
+radial-gradient(circle at 75% 65%, #2ea04333, transparent 40%);
+
+animation:move 18s ease-in-out infinite alternate;
+
 z-index:-1;
+pointer-events:none;
+filter:blur(20px);
 }
 
-@keyframes float{
-from{transform:translate(-5%, -5%)}
-to{transform:translate(5%, 5%)}
+@keyframes move{
+from{transform:translate(-4%,-4%)}
+to{transform:translate(4%,4%)}
+}
+
+/* main layout */
+
+.main{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:40px;
 }
 
 .container{
 text-align:center;
-padding:40px;
-max-width:700px;
+max-width:800px;
 }
 
+/* logo */
+
 .logo{
-font-size:64px;
+font-size:72px;
 font-weight:700;
-letter-spacing:6px;
+letter-spacing:10px;
 margin-bottom:10px;
 }
 
 .tagline{
 color:#8b949e;
 font-size:18px;
-margin-bottom:30px;
+margin-bottom:40px;
+}
+
+/* terminal */
+
+.terminal{
+background:#010409;
+border:1px solid #30363d;
+border-radius:8px;
+padding:20px;
+text-align:left;
+font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+font-size:14px;
+line-height:1.6;
+max-width:600px;
+margin:auto;
+box-shadow:0 0 30px rgba(31,111,235,0.15);
+min-height:160px;
 }
 
 .line{
-width:60px;
-height:2px;
-background:#30363d;
-margin:30px auto;
+opacity:0;
+white-space:pre;
+animation:appear 0.4s forwards;
 }
 
-.status{
-font-size:15px;
-color:#8b949e;
+@keyframes appear{
+to{opacity:1}
 }
 
-.links{
-margin-top:30px;
+/* blinking cursor */
+
+.cursor{
+display:inline-block;
+width:8px;
+background:#e6edf3;
+margin-left:4px;
+animation:blink 1s steps(1) infinite;
 }
 
-.links a{
-color:#58a6ff;
-text-decoration:none;
-margin:0 12px;
-font-size:14px;
+@keyframes blink{
+50%{opacity:0;}
 }
 
-.links a:hover{
-text-decoration:underline;
-}
+/* footer */
 
 footer{
-position:absolute;
-bottom:20px;
-font-size:13px;
+text-align:center;
+padding:20px;
 color:#6e7681;
+font-size:13px;
+}
+
+footer a{
+color:#58a6ff;
+text-decoration:none;
+margin-left:10px;
+}
+
+footer a:hover{
+text-decoration:underline;
 }
 
 </style>
@@ -101,32 +144,66 @@ color:#6e7681;
 
 <body>
 
+<div class="main">
+
 <div class="container">
 
-<div class="logo">
-KOALA
-</div>
+<div class="logo">KOALA</div>
 
 <div class="tagline">
 Something interesting is cooking.
 </div>
 
-<div class="line"></div>
+<div class="terminal" id="terminal"></div>
 
-<div class="status">
-Early stage project.<br>
-More details later.
-</div>
-
-<div class="links">
-<a href="https://github.com/koala-build">GitHub</a>
 </div>
 
 </div>
 
 <footer>
-koala.build
+koala.build • <a href="https://github.com/koala-build">GitHub</a>
 </footer>
+
+<script>
+
+const lines = [
+
+"> booting system...",
+"> loading modules...",
+"> initializing runtime...",
+"> establishing connections...",
+"> preparing environment...",
+"> system ready.",
+"",
+"        ʕ •ᴥ•ʔ",
+"        KOALA",
+"",
+"> koala.build",
+"> status: early stage",
+"> details: coming later"
+
+]
+
+const terminal = document.getElementById("terminal")
+
+lines.forEach((text, i) => {
+setTimeout(() => {
+const div = document.createElement("div")
+div.className = "line"
+div.textContent = text
+terminal.appendChild(div)
+}, i * 600)
+})
+
+/* add blinking cursor at the end */
+
+setTimeout(() => {
+const cursor = document.createElement("span")
+cursor.className = "cursor"
+terminal.appendChild(cursor)
+}, lines.length * 600)
+
+</script>
 
 </body>
 </html>
